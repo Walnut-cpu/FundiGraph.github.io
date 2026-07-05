@@ -1,7 +1,9 @@
 # FundiGraph
 FundiGraph is a retinal disease knowledge graph constructed based on a large language model (NotebookLM and ChatGPT4o), covering 13 categories and 739 types of retinal diseases, including both common and rare ones. 
 
-It covers a total of 22 types of medical entities including Disease, Synonym, Staging and typing, Anatomical location, Examination, Symptom, Physical sign, OCT sign, Gene, Differential diagnosis, Complication, Etiology, Related disease, Treatment (General, Drug, Drug usage, Sugery, Indications and Contraindications), Age of onset, High risk population and Medical history. And covers a total of 17 types of medical relations including Contain, Same as, Classified as, Located in, Requires examination, Has OCT sign, Has symptom, Has physical sign, Related gene, Needs distinguished from, May case, Caused by, Related to, Onset during, Affects population and Related history.
+It covers a total of 22 types of medical entities including Disease, Synonym, Staging and typing, Anatomical location, Examination, Symptom, Physical sign, OCT sign, Gene, Differential diagnosis, Complication, Etiology, Related disease, Treatment (General, Drug, Drug usage, Sugery, Indications and Contraindications), Age of onset, High risk population and Medical history. 
+
+And it covers a total of 17 types of medical relations including Contain, Same as, Classified as, Located in, Requires examination, Has OCT sign, Has symptom, Has physical sign, Related gene, Needs distinguished from, May case, Caused by, Related to, Onset during, Affects population and Related history.
 
 We sincerely invite all medical researchers and medical practitioners to read and use it.
 
@@ -28,7 +30,7 @@ We have uploaded various data formats of FundiGraph. Please select the appropria
 ## Citation
 If you use these files for research, please cite our article.
 
-For any clarification, comments, or suggestions please create an issue or contact Haoyu Chen (drchenhaoyu@gmail.com) or Siyani Chen (drsiyanichen@gmail.com).
+For any clarification, comments, or suggestions please create an issue or contact Haoyu Chen (haoyuchen@cuhk.edu.hk) or Siyani Chen (drsiyanichen@gmail.com).
 
 ## License
 Creative Commons Attribution-NonCommercial 4.0 International（CC BY-NC 4.0）

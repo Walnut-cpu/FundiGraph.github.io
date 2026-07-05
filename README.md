@@ -1,24 +1,24 @@
-# RetiGraph
-RetiGraph is a retinal disease knowledge graph constructed based on a large language model (NotebookLM and ChatGPT4o), covering 13 categories and 732 types of retinal diseases, including both common and rare ones. 
+# FundiGraph
+FundiGraph is a retinal disease knowledge graph constructed based on a large language model (NotebookLM and ChatGPT4o), covering 13 categories and 732 types of retinal diseases, including both common and rare ones. 
 
 It covers a total of 12 types of medical entities including Disease, Synonym, Staging and Typing, OCT sign, Symptom, Physical sign, Gene, Differential diagnosis, Complication, Etiology, Related disease and Treatment. 
 
 We sincerely invite all medical researchers and medical practitioners to read and use it.
 
 ## KG access
-We have provided an online access page for RetiGraph. You can access it through the following link: https://neo4j.3446740.xyz/
+We have provided an online access page for FundiGraph. You can access it through the following link: https://neo4j.3446740.xyz/
 
 Besides, you can also choose to deploy the data locally.
 
 ## Contents
-- `/Dataset` -Store the data information of RetiGraph
+- `/Dataset` -Store the data information of FundiGraph
 - `/Data processing` -The method for importing data into Neo4j Community
 
 ## Dataset
-We have uploaded various data formats of RetiGraph. Please select the appropriate one according to your needs.
-* Excel Document: RetiGraph.xlsx
-* CSV Document: RetiGraph_relation.csv
-* APOC document: RetiGraph.dump.db
+We have uploaded various data formats of FundiGraph. Please select the appropriate one according to your needs.
+* Excel Document: FundiGraph.xlsx
+* CSV Document: FundiGraph_relation.csv
+* APOC document: FundiGraph.dump.db
 
 ## Requirements
 * python==3.8.0

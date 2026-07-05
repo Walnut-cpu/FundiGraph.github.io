@@ -1,5 +1,5 @@
 # FundiGraph
-FundiGraph is a retinal disease knowledge graph constructed based on a large language model (NotebookLM and ChatGPT4o), covering 13 categories and 739 types of retinal diseases, including both common and rare ones. 
+FundiGraph is a retinal disease knowledge graph constructed based on a large language model, covering 13 categories and 739 types of retinal diseases, including both common and rare ones. 
 
 It covers a total of 22 types of medical entities including Disease, Synonym, Staging and typing, Anatomical location, Examination, Symptom, Physical sign, OCT sign, Gene, Differential diagnosis, Complication, Etiology, Related disease, Treatment (General, Drug, Drug usage, Sugery, Indications and Contraindications), Age of onset, High risk population and Medical history. 
 

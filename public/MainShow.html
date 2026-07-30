@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FundiGraph</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="sidebar">
+    <h3>Node Search</h3>
+    <input type="text" id="searchInput" placeholder="Enter keyword to search node" />
+    <button id="searchBtn">Search</button>
+    <h3>Label Directory</h3>
+    <div id="labelButtons"></div>
+    <div style="margin-top: 20px;">
+      <button id="clearBtn" style="background:#f44336; color:white;">Clear Graph</button>
+      <button id="showFullGraphBtn" style="margin-top:10px; background:#4CAF50; color:white;">Show Full Graph</button>
+    </div>
+  </div>
+  <div id="graph">
+    <div id="detailsPanel"></div>
+    <svg></svg>
+    <div id="legend"></div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

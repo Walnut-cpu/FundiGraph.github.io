@@ -1,6 +1,21 @@
 # FundiGraph
-FundiGraph is a comprehensive knowledge graph for retinal diseases, constructed using a hybrid approach that combines large language models with rigorous expert review. 
+FundiGraph is a comprehensive knowledge graph for retinal diseases, constructed using a hybrid approach that combines large language models with rigorous expert review，which encompasses 739 retinal disease categories.
 
-It encompasses 739 retinal disease categories, comprising 20,906 entities across 22 distinct semantic types—including Disease, Synonym, Staging and Typing, Anatomical Location, Examination, Symptom, Physical Sign, OCT Sign, Gene, Differential Diagnosis, Complication, Etiology, Related Disease, Age of Onset, High-Risk Population, Medical History, as well as treatment-related entities (General Treatment, Drug, Drug Usage, Surgery, Indications, and Contraindications). 
+22 tyepes of entities: Disease, Synonym, Staging and Typing, Anatomical Location, Examination, Symptom, Physical Sign, OCT Sign, Gene, Differential Diagnosis, Complication, Etiology, Related Disease, Age of Onset, High-Risk Population, Medical History, as well as treatment-related entities (General Treatment, Drug, Drug Usage, Surgery, Indications, and Contraindications). 
 
-Furthermore, FundiGraph defines 17 relation types (such as Contain, Same as, Classified as, Located in, Requires examination, Has OCT sign, Has symptom, Has physical sign, Related gene, Needs distinguished from, May cause, Caused by, Related to, Onset during, Affects population, and Related history), forming a rich relational network of 42,532 semantic triples.
+17 types of relations: Contain, Same as, Classified as, Located in, Requires examination, Has OCT sign, Has symptom, Has physical sign, Related gene, Needs distinguished from, May cause, Caused by, Related to, Onset during, Affects population, and Related history), forming a rich relational network of 42,532 semantic triples.
+
+## FundiGraph data
+* FundiGraph.xlsx
+* FunGraph.csv
+* FundiGraph-dump.db
+
+## Requirement
+* py2neo==2021.2.4
+* tqdm==4.67.1
+* pandas==2.0.3
+* ipykernel==6.29.5
+* python==3.8.0
+
+## Declaration
+We encourage and support the use of this dataset for non-commercial research purposes. If you use our data in your work, please cite our manuscript. For any inquiries or further details, feel free to contact Haoyu Chen (haoyuchen@cuhk.edu.hk) and Siyani Chen (drsiyanichen@gmail.com).

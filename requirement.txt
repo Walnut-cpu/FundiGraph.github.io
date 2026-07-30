@@ -2,4 +2,3 @@ py2neo
 tqdm
 pandas
 ipykernel
-python

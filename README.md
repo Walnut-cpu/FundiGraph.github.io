@@ -17,5 +17,8 @@ FundiGraph is a retinal disease knowledge graph constructed based on a large lan
 * ipykernel==6.29.5
 * python==3.8.0
 
+## Visualization platform
+We have designed a publicly accessible visual web page that enables browsing and searching of the content of the knowledge graph. You can browse it through the following webpage: https://fundigraph-github-io.onrender.com
+
 ## Declaration
 We encourage and support the use of this dataset for non-commercial research purposes. If you use our data in your work, please cite our manuscript. For any inquiries or further details, feel free to contact Haoyu Chen (haoyuchen@cuhk.edu.hk) and Siyani Chen (drsiyanichen@gmail.com).

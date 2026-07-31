@@ -215,29 +215,36 @@ app.get("/api/graph/nodesByLabel/:label", async (req, res) => {
   }
 });
 
-// 搜索节点和相关关系
-// 搜索节点和相关关系（基于全文索引的模糊/容错检索）
+// 搜索节点和相关关系（增强版模糊/容错检索）
 app.get("/api/graph/search", async (req, res) => {
   const query = req.query.query;
   console.log(`GET /api/graph/search called with query: '${query}'`);
   if (!query) {
-    console.warn("No query parameter provided for search");
     return res.status(400).send("缺少查询参数");
   }
 
-  // 1. 对用户输入的字符串进行预处理：
-  // 去除首尾空白，并将特殊字符/破折号替换为空格，然后按空格拆分词组
-  const cleanedQuery = query.trim().replace(/[–—\-]/g, " ");
-  const terms = cleanedQuery.split(/\s+/).filter(Boolean);
+  // 1. 彻底替换各类破折号（全角/半角/En-dash/Em-dash/Hyphen）及特殊字符为空格
+  const cleanedQuery = query.trim()
+    .replace(/[\u2010-\u2015\u2212\-_~–—]/g, " ") // 覆盖所有类型的连字符与破折号
+    .replace(/[+&|!(){}\[\]^"~*?:\\\/]/g, " ")   // 清理 Lucene 敏感字符
+    .replace(/\s+/g, " ");                      // 合并连续空格
+
+  const terms = cleanedQuery.split(" ").filter(Boolean);
 
   if (terms.length === 0) {
     return res.json({ nodes: [], edges: [] });
   }
 
-  // 2. 构造 Lucene 全文检索表达式：
-  // 比如输入 "white dot syndrome"，构造出 "white* AND dot* AND syndrome*"
-  // 加上 wildcard (*) 可以实现前缀匹配，AND 确保多词组合都能命中
-  const luceneQuery = terms.map(term => `${term}*`).join(" AND ");
+  // 2. 构造双层 Lucene 表达式：
+  // 兼顾“精准匹配（精确短语/AND）”与“软匹配（OR / 通配符）”
+  // 比如输入 "white dot syndrome"，构造出：
+  // "(white* AND dot* AND syndrome*) OR (\"white dot syndrome\"~2)"
+  const exactPhrase = `"${terms.join(" ")}"~2`; // 允许单词间有 2 个字符的间隔/差异
+  const andTerms = terms.map(term => `${term}*`).join(" AND ");
+  const orTerms = terms.map(term => `${term}*`).join(" OR ");
+
+  // 组合逻辑：优先满足 AND，满足不了时退回 OR
+  const luceneQuery = `(${andTerms}) OR ${exactPhrase} OR (${orTerms})`;
 
   const session = driver.session({ database: dbName });
   try {
@@ -246,6 +253,7 @@ app.get("/api/graph/search", async (req, res) => {
       CALL db.index.fulltext.queryNodes("nodeNameFulltextIndex", $luceneQuery) YIELD node AS n, score
       OPTIONAL MATCH (n)-[r]-(m)
       RETURN n, r, m, score
+      ORDER BY score DESC
       LIMIT 50
       `,
       { luceneQuery }
@@ -256,31 +264,6 @@ app.get("/api/graph/search", async (req, res) => {
     res.json({ nodes, edges });
   } catch (err) {
     console.error("Error in /api/graph/search:", err);
-    res.status(500).send("查询失败");
-  } finally {
-    await session.close();
-  }
-});
-
-// 展开节点邻居
-app.get("/api/graph/expand/:nodeId", async (req, res) => {
-  const nodeId = req.params.nodeId;
-  console.log(`GET /api/graph/expand/${nodeId} called`);
-  const session = driver.session({ database: dbName });
-  try {
-    const result = await session.run(
-      `
-      MATCH (n)-[r]-(m)
-      WHERE id(n) = toInteger($nodeId) OR id(m) = toInteger($nodeId)
-      RETURN n, r, m
-      `,
-      { nodeId }
-    );
-    const { nodes, edges } = processResult(result);
-    console.log(`Expand node results: ${nodes.length} nodes, ${edges.length} edges`);
-    res.json({ nodes, edges });
-  } catch (err) {
-    console.error(`Error in /api/graph/expand/${nodeId}:`, err);
     res.status(500).send("查询失败");
   } finally {
     await session.close();

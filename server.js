@@ -25,6 +25,25 @@ if (!dbUri || !dbUsername || !dbPassword) {
 // 创建 Neo4j 驱动
 const driver = neo4j.driver(dbUri, neo4j.auth.basic(dbUsername, dbPassword));
 
+// ✅ 在服务启动时自动检查并创建全文索引
+async function initFulltextIndex() {
+  const session = driver.session({ database: dbName });
+  try {
+    // 如果不限定特定 Label，用 FOR (n)；若限制 Label 可以写 FOR (n:Entity)
+    await session.run(`
+      CREATE FULLTEXT INDEX nodeNameFulltextIndex IF NOT EXISTS
+      FOR (n) 
+      ON EACH [n.name, n.properties.name, n.properties.aliases]
+    `);
+    console.log("✅ 全文索引 nodeNameFulltextIndex 初始化成功或已存在");
+  } catch (err) {
+    console.warn("⚠️ 初始化全文索引时提示（忽略或检查权限）:", err.message);
+  } finally {
+    await session.close();
+  }
+}
+initFulltextIndex();
+
 // 提供静态文件服务
 // 假设你的 HTML 页面存放在 'public' 文件夹中
 app.use(express.static(path.join(__dirname, "public")));
@@ -197,6 +216,7 @@ app.get("/api/graph/nodesByLabel/:label", async (req, res) => {
 });
 
 // 搜索节点和相关关系
+// 搜索节点和相关关系（基于全文索引的模糊/容错检索）
 app.get("/api/graph/search", async (req, res) => {
   const query = req.query.query;
   console.log(`GET /api/graph/search called with query: '${query}'`);
@@ -204,19 +224,35 @@ app.get("/api/graph/search", async (req, res) => {
     console.warn("No query parameter provided for search");
     return res.status(400).send("缺少查询参数");
   }
+
+  // 1. 对用户输入的字符串进行预处理：
+  // 去除首尾空白，并将特殊字符/破折号替换为空格，然后按空格拆分词组
+  const cleanedQuery = query.trim().replace(/[–—\-]/g, " ");
+  const terms = cleanedQuery.split(/\s+/).filter(Boolean);
+
+  if (terms.length === 0) {
+    return res.json({ nodes: [], edges: [] });
+  }
+
+  // 2. 构造 Lucene 全文检索表达式：
+  // 比如输入 "white dot syndrome"，构造出 "white* AND dot* AND syndrome*"
+  // 加上 wildcard (*) 可以实现前缀匹配，AND 确保多词组合都能命中
+  const luceneQuery = terms.map(term => `${term}*`).join(" AND ");
+
   const session = driver.session({ database: dbName });
   try {
     const result = await session.run(
       `
-      MATCH (n)-[r]-(m)
-      WHERE toLower(n.properties.name) CONTAINS toLower($query)
-         OR toLower(m.properties.name) CONTAINS toLower($query)
-      RETURN n, r, m
+      CALL db.index.fulltext.queryNodes("nodeNameFulltextIndex", $luceneQuery) YIELD node AS n, score
+      OPTIONAL MATCH (n)-[r]-(m)
+      RETURN n, r, m, score
+      LIMIT 50
       `,
-      { query }
+      { luceneQuery }
     );
+
     const { nodes, edges } = processResult(result);
-    console.log(`Search results: ${nodes.length} nodes, ${edges.length} edges`);
+    console.log(`Search results for '${luceneQuery}': ${nodes.length} nodes, ${edges.length} edges`);
     res.json({ nodes, edges });
   } catch (err) {
     console.error("Error in /api/graph/search:", err);
